@@ -24,7 +24,7 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div>
       {/* INITIAL CODE FOR PRACTICE */}
       {/* <header className="App-header">
         <h1>This is Chat</h1>

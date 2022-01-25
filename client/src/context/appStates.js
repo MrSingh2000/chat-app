@@ -10,7 +10,6 @@ const AppStates = (props) => {
     useEffect(() => {
         socket.on("myId", (payload) => {
             setUserId(payload.id);
-            console.log(payload);
         });
     }, []);
 
