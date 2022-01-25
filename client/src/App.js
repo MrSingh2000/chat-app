@@ -1,29 +1,32 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-
-import io from "socket.io-client";
-
-const socket = io.connect("http://localhost:5000");
+import Home from './components/Home';
+import AppContext from './context/appStates';
 
 function App() {
-  const [message, setMessage] = useState("");
-  const [chat, setChat] = useState([]);
+  // INITIAL CODE FOR PRACTICE
+  // const [message, setMessage] = useState("");
+  // const [chat, setChat] = useState([]);
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    socket.emit("sendMes", { message });
-    setMessage("");
-  };
+  // const sendMessage = (e) => {
+  //   e.preventDefault();
+  //   socket.emit("sendMes", { message });
+  //   setMessage("");
+  // };
 
-  useEffect(() => {
-    socket.on("sendMes", (payload) => {
-      setChat([...chat, payload]);
-    })
-  });
+  // useEffect(() => {
+  //   socket.on("sendMes", (payload) => {
+  //     setChat([...chat, payload]);
+  //   })
+  // });
+
+  // DRIVER CODE
+
 
   return (
     <div className="App">
-      <header className="App-header">
+      {/* INITIAL CODE FOR PRACTICE */}
+      {/* <header className="App-header">
         <h1>This is Chat</h1>
         {chat.map((payload, index) => {
           return (
@@ -45,7 +48,10 @@ function App() {
           />
           <button type="submit">Send</button>
         </form>
-      </header>
+      </header> */}
+
+      {/* DRIVER CODE */}
+      <Home />
     </div>
   );
 }
