@@ -10,7 +10,7 @@ function Home() {
     return (
         <Box>
             <TopNav />
-            <Box sx={{ display: 'flex', justifyContent: "space-evenly", mt: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: "space-between", mt: 2, mx: 2 }}>
                 <div>
                     <AllChats />
                 </div>
