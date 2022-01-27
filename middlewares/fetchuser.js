@@ -13,7 +13,6 @@ const fetchuser = (req, res, next) => {
         // fetching data/user from token
         const data = jwt.verify(token, process.env.JWT_SECRET);
         req.user = data.user;
-        // console.log(data.user.id);
         next();
     } catch (error) {
         res.status(401).send({ error: "Invalid auth-token" });

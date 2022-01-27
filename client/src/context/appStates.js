@@ -3,8 +3,12 @@ import io from "socket.io-client";
 import appContext from "./appContext";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const socket = io.connect("http://localhost:5000");
-
+const socket = io.connect("http://localhost:5000", {
+    auth: {
+        token: localStorage.getItem("authToken"),
+        userId: localStorage.getItem("userId")
+    }
+});
 
 const AppStates = (props) => {
     // for material-ui theme breakpoints
@@ -20,18 +24,19 @@ const AppStates = (props) => {
     });
 
     const [userId, setUserId] = useState("");
+    const [authToken, setAuthToken] = useState("");
     const [chat, setChat] = useState([]);
-
-    useEffect(() => {
-        socket.on("myId", (payload) => {
-            setUserId(payload.id);
-        });
-    }, []);
 
     useEffect(() => {
         socket.on("sendMes", (payload) => {
             setChat([...chat, payload]);
-        })
+        });
+        let localId = localStorage.getItem("userId");
+        let localToken = localStorage.getItem("authToken");
+        if (localToken) {
+            setAuthToken(localToken);
+            setUserId(localId);
+        }
     });
 
 
@@ -47,8 +52,11 @@ const AppStates = (props) => {
             value={{
                 theme,
                 userId,
+                setUserId,
                 sendMessage,
                 chat,
+                authToken,
+                setAuthToken
             }}>
             {props.children}
         </appContext.Provider>
