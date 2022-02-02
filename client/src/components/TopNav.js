@@ -15,8 +15,12 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import Button from '@mui/material/Button';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import appContext from '../context/appContext';
+import { Link } from 'react-router-dom';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -35,7 +39,7 @@ const Search = styled('div')(({ theme }) => ({
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
+    padding: theme.spacing(0, 0),
     height: '100%',
     position: 'absolute',
     pointerEvents: 'none',
@@ -59,6 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function TopNav() {
+    const { userId, searchClient, searchClientId, searchLoader, handleChangeClientId } = React.useContext(appContext);
+    const [searchedId, setSearchedId] = React.useState("");
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -156,6 +162,12 @@ export default function TopNav() {
         </Menu>
     );
 
+    const handleSearchClick = () => {
+        if (searchClientId === searchedId) {
+            handleChangeClientId(searchClientId);
+        }
+    }
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
@@ -174,7 +186,11 @@ export default function TopNav() {
                                     <MenuIcon />
                                 </IconButton>
                                 <Menu {...bindMenu(popupState)}>
-                                    <MenuItem onClick={popupState.close}>Profile</MenuItem>
+                                    <MenuItem onClick={popupState.close}>
+                                        <Link to="/profile" style={{ textDecoration: "none", color: "black" }}>
+                                            Profile
+                                        </Link>
+                                    </MenuItem>
                                     <MenuItem onClick={popupState.close}>My account</MenuItem>
                                     <MenuItem onClick={popupState.close}>Logout</MenuItem>
                                 </Menu>
@@ -187,17 +203,31 @@ export default function TopNav() {
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        Chattery
+                        Chattery {userId}
                     </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
+                    <div >
+                        <Search>
+                            <SearchIconWrapper>
+                                {/* <Button sx={{cursor: "pointer"}} onClick={() => { searchClient(searchedId) }}> */}
+                                <SearchIcon sx={{ color: "white" }} />
+                                {/* </Button> */}
+                            </SearchIconWrapper>
+                            <StyledInputBase
+                                onChange={(e) => {
+                                    searchClient(e.target.value);
+                                    setSearchedId(e.target.value)
+                                }}
+                                placeholder="Enter Valid Username"
+                                value={searchedId}
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
+                        </Search>
+                        <Paper elevation={4} sx={{ textAlign: 'center', backgroundColor: 'white', color: 'black', position: 'absolute', margin: 'auto', borderRadius: '10px', padding: '10px', overflowY: 'auto', overflowX: 'hidden', maxHeight: '10rem', zIndex: '1', display: `${!searchedId ? "none" : "block"}` }}>
+                            <Button onClick={handleSearchClick}>
+                                {searchLoader ? "Loading.." : !searchedId ? "" : searchClientId && searchClientId === searchedId ? searchClientId : "Invalid Username"}
+                            </Button>
+                        </Paper>
+                    </div>
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton size="large" aria-label="show 4 new mails" color="inherit">

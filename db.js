@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Chat = require('./models/Chat');
 require('dotenv').config();
 
 const mongoURI = process.env.MONGODB_URI;

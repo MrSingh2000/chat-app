@@ -48,7 +48,7 @@ export default function ChatWindow() {
                                 <div key={index} style={{
                                     width: "100%",
                                     display: 'flex',
-                                    justifyContent: `${payload.userId !== userId ? 'left' : 'right'}`,
+                                    justifyContent: `${payload.from !== userId ? 'left' : 'right'}`,
                                 }}>
                                     <Paper sx={{
                                         minHeight: '10px',

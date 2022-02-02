@@ -9,6 +9,7 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 const bodyParser = require("body-parser");
+const saveMessageToDb = require('./functions/dbFunctions');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,11 +29,14 @@ connectToMongo();
 
 // app.use(bodyParser.json({ limit: '10mb' }));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/search', require('./routes/clients'));
 
 // io.engine.generateId = (req) => {
 // return Math.random()*1000; 
 // must be unique across all Socket.IO servers
 // }
+
+let liveUsers = [];
 
 io.use((socket, next) => {
     const token = socket.handshake.auth.token;
@@ -50,6 +54,8 @@ io.use((socket, next) => {
 // connection is established when client server starts
 io.on("connection", (socket) => {
     socket.id = socket.handshake.auth.userId;
+    liveUsers.push(socket);
+
     // getting the unique id of that particular socket
     // let id = socket.id;
     // sending the id to the client on first initialization
@@ -62,9 +68,20 @@ io.on("connection", (socket) => {
         io.emit("sendMes", { ...payload });
     });
 
+    socket.join("privateRoom");
+
+    // send a private message to someone with his/her userId which is in payload i.e. payload.to
     socket.on("privateMes", (payload) => {
-        io.to(payload.sendTo).emit("privateMes", { ...payload });
-    })
+        // saving chat message to the DB
+        saveMessageToDb(payload);
+        console.log(payload);
+        io.to(payload.to).emit("privateMes", { ...payload });
+        io.emit("privateMes", { ...payload });
+    });
+
+    socket.on("disconnect", (socket) => {
+        liveUsers.splice(liveUsers.indexOf(socket), 1);
+    });
 })
 
 server.listen(port, () => {
