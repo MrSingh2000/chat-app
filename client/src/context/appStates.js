@@ -30,19 +30,41 @@ const AppStates = (props) => {
     const [clientId, setClientId] = useState(null);
     const [searchLoader, setSearchLoader] = useState(false);
     const [searchClientId, setSearchClientId] = useState(null);
-    // let clientId;
-    // if (userId === "user1") {
-    //     clientId = "user2";
-    // }
-    // else {
-    //     clientId = "user1";
-    // }
     const [contacts, setContacts] = useState([]);
 
+    // add the searched & clicked person in the contact list of the user
+    const addContact = (client) => {
+        setContacts([...contacts, client]);
+        axios({
+            method: 'post',
+            url: `${process.env.REACT_APP_HOST}/api/search/add_contact`,
+            headers: {
+                "auth-token": authToken
+            },
+            data: clientId
+        })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
+    // delete a particular contact from the list
+    const deleteContact = (client) => {
+        setContacts(contacts.filter(item => item !== client));
+    }
+
+    // change the client ID (used in case of searched click)
     const handleChangeClientId = (client) => {
+        if (!contacts.includes(client)) {
+            addContact(client);
+        }
         setClientId(client);
     }
 
+    // search function used in navbar for searching a clientID
     const searchClient = (clientId) => {
         setSearchLoader(true);
         axios.get(`${process.env.REACT_APP_HOST}/api/search?userid=${clientId}`)
@@ -55,12 +77,9 @@ const AppStates = (props) => {
             })
     }
 
-    useEffect(() => {
-        //   getting the contact list of the user
-    }, []);
-
 
     useEffect(() => {
+        // handling sending private message (client Side)
         socket.on("privateMes", (payload) => {
             console.log(payload);
             if (payload.to === userId) {
@@ -105,7 +124,10 @@ const AppStates = (props) => {
                 searchLoader,
                 clientId,
                 searchClientId,
-                handleChangeClientId
+                handleChangeClientId,
+                addContact,
+                deleteContact,
+                contacts
             }}>
             {props.children}
         </appContext.Provider>

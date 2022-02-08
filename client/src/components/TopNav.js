@@ -165,6 +165,7 @@ export default function TopNav() {
     const handleSearchClick = () => {
         if (searchClientId === searchedId) {
             handleChangeClientId(searchClientId);
+            setSearchedId("");
         }
     }
 
@@ -203,19 +204,17 @@ export default function TopNav() {
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        Chattery {userId}
+                        Chatty {userId}
                     </Typography>
                     <div >
                         <Search>
                             <SearchIconWrapper>
-                                {/* <Button sx={{cursor: "pointer"}} onClick={() => { searchClient(searchedId) }}> */}
                                 <SearchIcon sx={{ color: "white" }} />
-                                {/* </Button> */}
                             </SearchIconWrapper>
                             <StyledInputBase
                                 onChange={(e) => {
                                     searchClient(e.target.value);
-                                    setSearchedId(e.target.value)
+                                    setSearchedId(e.target.value);
                                 }}
                                 placeholder="Enter Valid Username"
                                 value={searchedId}

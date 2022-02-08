@@ -46,7 +46,6 @@ io.use((socket, next) => {
             socket.disconnect();
             return;
         }
-        console.log("JWT token Verified");
         next();
     });
 });

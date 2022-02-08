@@ -12,7 +12,7 @@ export default function ChatWindow() {
         sendMessage,
         chat,
         userId,
-
+        clientId,
     } = useContext(appContext);
     const [message, setMessage] = useState("");
 
@@ -42,7 +42,10 @@ export default function ChatWindow() {
                         tablet: "block"
                     }, height: '85vh', backgroundColor: 'red'
                 }}>
-                    <div className="scrollBar" style={{overflowY: 'scroll'}}>
+                    <div className="scrollBar" style={{ overflowY: 'scroll' }}>
+                        <div style={{ backgroundColor: 'white', margin: '2px' }}>
+                            {clientId}
+                        </div>
                         {chat.map((payload, index) => {
                             return (
                                 <div key={index} style={{
