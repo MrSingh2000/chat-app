@@ -115,4 +115,21 @@ router.post('/delete_contact', fetchuser, async (req, res) => {
     }
 });
 
+// send the existing contact list of the user (used when user logins)
+router.get('/my_contacts', fetchuser, async (req, res) => {
+    try {
+        // get user from the reques (via headers by fetchuser middleware)
+        let user = req.user.username;
+        let userExists = await User.findById(req.user.id);
+        if (!userExists) {
+            return res.status(401).json({ error: "Invalid Credentials" });
+        }
+        // get existing contact list for the user
+        let contact = await Contacts.findOne({ user });
+         res.json({contact});
+    } catch (error) {
+        res.status(500).json({ error: "Server Errror Occurred! Try again Later." });
+    }
+});
+
 module.exports = router;

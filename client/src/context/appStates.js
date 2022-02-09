@@ -34,33 +34,78 @@ const AppStates = (props) => {
 
     // add the searched & clicked person in the contact list of the user
     const addContact = (client) => {
-        setContacts([...contacts, client]);
         axios({
             method: 'post',
             url: `${process.env.REACT_APP_HOST}/api/search/add_contact`,
             headers: {
                 "auth-token": authToken
             },
-            data: clientId
+            data: {
+                clientId: client
+            }
         })
             .then((res) => {
-                console.log(res);
+                setContacts([...res.data.contact.contacts]);
             })
             .catch((err) => {
-                console.log(err);
+                console.log("Error in Contact Add: ", err);
             })
     }
 
     // delete a particular contact from the list
     const deleteContact = (client) => {
-        setContacts(contacts.filter(item => item !== client));
+        axios({
+            method: 'post',
+            url: `${process.env.REACT_APP_HOST}/api/search/delete_contact`,
+            headers: {
+                "auth-token": authToken
+            },
+            data: {
+                clientId: client
+            }
+        })
+            .then((res) => {
+                setContacts([...res.data]);
+            })
+            .catch((err) => {
+                console.log("Error in Contact Delete: ", err);
+            })
     }
+
+    // get the contacts of the user once user logged In
+    const getContactsOnce = () => {
+        if (authToken) {
+            axios({
+                method: "get",
+                url: `${process.env.REACT_APP_HOST}/api/search/my_contacts`,
+                headers: {
+                    "auth-token": authToken
+                }
+            })
+                .then((res) => {
+                    setContacts([...res.data.contact.contacts]);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
+    }
+    useEffect(() => {
+        getContactsOnce();
+    }, [authToken]);
+
 
     // change the client ID (used in case of searched click)
     const handleChangeClientId = (client) => {
-        if (!contacts.includes(client)) {
-            addContact(client);
+        // check if contact already exists, and if yes dont send backend request for contact add
+        for(let i = 0; i < contacts.length; i++){
+            console.log(contacts[i].data)
+            if(contacts[i].data === client){
+                setClientId(client);
+                return;
+            }
         }
+        addContact(client);
         setClientId(client);
     }
 
@@ -127,7 +172,8 @@ const AppStates = (props) => {
                 handleChangeClientId,
                 addContact,
                 deleteContact,
-                contacts
+                contacts,
+                getContactsOnce
             }}>
             {props.children}
         </appContext.Provider>

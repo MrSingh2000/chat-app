@@ -63,7 +63,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function TopNav() {
-    const { userId, searchClient, searchClientId, searchLoader, handleChangeClientId } = React.useContext(appContext);
+    const {
+        userId,
+        searchClient,
+        searchClientId,
+        searchLoader,
+        handleChangeClientId,
+        addContact,
+        deleteContact,
+    } = React.useContext(appContext);
     const [searchedId, setSearchedId] = React.useState("");
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
