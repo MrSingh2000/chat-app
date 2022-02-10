@@ -30,6 +30,7 @@ connectToMongo();
 // app.use(bodyParser.json({ limit: '10mb' }));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/search', require('./routes/clients'));
+app.use('/api/user', require('./routes/personal'));
 
 // io.engine.generateId = (req) => {
 // return Math.random()*1000; 

@@ -8,6 +8,9 @@ const contactSchema = new Schema({
         required: true,
         ref: 'user'
     },
+    bio: {
+        type: String
+    },
     contacts: [{
         data: {
             type: String,

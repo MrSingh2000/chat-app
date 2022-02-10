@@ -4,6 +4,76 @@ import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
+import { useNavigate } from 'react-router-dom';
+import appContext from '../../context/appContext';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import Input from '@mui/material/Input';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+export function AlertDialogSlide(props) {
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const { setUpdatedBio, updatedBio } = props;
+
+    const {
+        profileDetails,
+        updateProfileDetails
+    } = React.useContext(appContext);
+
+    const handleEdit = () => {
+        updateProfileDetails("bio", updatedBio);
+        handleClose();
+    }
+
+    return (
+        <div>
+            <IconButton aria-label="edit" onClick={handleClickOpen}>
+                <BorderColorOutlinedIcon fontSize="3rem" />
+            </IconButton>
+            <Dialog
+                open={open}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle>{"Update Your Bio!"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        <Input onChange={(e) => { setUpdatedBio(e.target.value) }} value={updatedBio} />
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleEdit}>Edit</Button>
+                </DialogActions>
+            </Dialog>
+        </div>
+    );
+}
+
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
     '& .MuiBadge-badge': {
@@ -34,35 +104,55 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     },
 }));
 
-const SmallAvatar = styled(Avatar)(({ theme }) => ({
-    width: 22,
-    height: 22,
-    border: `2px solid ${theme.palette.background.paper}`,
-}));
 
 export default function Profile() {
+    const {
+        userId,
+        profileDetails,
+        authToken
+    } = React.useContext(appContext);
+    let navigate = useNavigate();
+
+    const [updatedBio, setUpdatedBio] = React.useState("");
+
+
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px', textAlign: 'center' }}>
-            <Paper elevation={4} sx={{ maxWidth: '32rem', padding: '10px', backgroundColor: 'red' }}>
-                <StyledBadge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    variant="dot"
-                >
-                    <Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                </StyledBadge>
-                <h2>User name</h2>
-                <div>
-                    <h4>Bio
-                        <span style={{ cursor: 'pointer', marginLeft: '8px' }}>
-                            <BorderColorOutlinedIcon fontSize="4rem" />
-                        </span>
-                    </h4>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut quasi nihil tenetur, iure nisi iusto laboriosam voluptatem consequuntur veritatis voluptate optio minus dicta perferendis in voluptates minima, enim similique sit!
-                    </p>
-                </div>
-            </Paper>
-        </div>
+        <>
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ mr: 2 }}
+                            onClick={() => { navigate(-1) }}
+                        >
+                            <ArrowBackOutlinedIcon />
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+            </Box>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px', textAlign: 'center' }}>
+                <Paper elevation={4} sx={{ maxWidth: '32rem', padding: '10px', backgroundColor: 'red' }}>
+                    <StyledBadge
+                        overlap="circular"
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        variant="dot"
+                    >
+                        <Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                    </StyledBadge>
+                    <h2>{userId}</h2>
+                    <div>
+                        <p style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>{profileDetails.bio ? profileDetails.bio : "Add your Bio"}
+                            <span style={{ cursor: 'pointer', marginLeft: '8px' }}>
+                                <AlertDialogSlide setUpdatedBio={setUpdatedBio} updatedBio={updatedBio} />
+                            </span>
+                        </p>
+                    </div>
+                </Paper>
+            </div>
+        </>
     );
 }

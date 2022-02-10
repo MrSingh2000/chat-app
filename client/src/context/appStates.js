@@ -31,6 +31,12 @@ const AppStates = (props) => {
     const [searchLoader, setSearchLoader] = useState(false);
     const [searchClientId, setSearchClientId] = useState(null);
     const [contacts, setContacts] = useState([]);
+    const [profileDetails, setProfileDetails] = useState({
+        user: userId,
+        bio: "Add your Bio",
+        pic: "",
+        status: ""
+    });
 
     // add the searched & clicked person in the contact list of the user
     const addContact = (client) => {
@@ -72,6 +78,70 @@ const AppStates = (props) => {
             })
     }
 
+    // get the profile details of the user
+    const getProfileDetails = () => {
+        axios({
+            url: `${process.env.REACT_APP_HOST}/api/user/details`,
+            method: 'get',
+            headers: {
+                "auth-token": authToken,
+            }
+        })
+            .then((res) => {
+                setProfileDetails(res.data.details);
+                console.log(res.data.details);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
+    // update any profile details by the parameter
+    const updateProfileDetails = (param, value) => {
+        let url, data;
+        if (param === "bio") {
+            url = `${process.env.REACT_APP_HOST}/api/user/bio`;
+            data = {
+                bio: value
+            }
+        }
+        else if (param === "profile_pic") {
+            url = `${process.env.REACT_APP_HOST}/api/user/profile_pic`;
+            data = {
+                pic: value
+            }
+        }
+        else if (param === "save_status") {
+            url = `${process.env.REACT_APP_HOST}/api/user/bio`;
+            data = {
+                status: value
+            }
+        }
+        else if (param === "delete_status") {
+            url = `${process.env.REACT_APP_HOST}/api/user/bio`;
+            data = {
+                status: value
+            }
+        }
+        else {
+            return;
+        }
+        axios({
+            url,
+            method: 'post',
+            headers: {
+                "auth-token": authToken
+            },
+            data
+        })
+            .then((res) => {
+                setProfileDetails(res.data.details);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
     // get the contacts of the user once user logged In
     const getContactsOnce = () => {
         if (authToken) {
@@ -90,17 +160,20 @@ const AppStates = (props) => {
                 })
         }
     }
+    // this useEffect is used only once when user loggedIn or authToken is got
     useEffect(() => {
         getContactsOnce();
+        getProfileDetails();
     }, [authToken]);
+
 
 
     // change the client ID (used in case of searched click)
     const handleChangeClientId = (client) => {
         // check if contact already exists, and if yes dont send backend request for contact add
-        for(let i = 0; i < contacts.length; i++){
+        for (let i = 0; i < contacts.length; i++) {
             console.log(contacts[i].data)
-            if(contacts[i].data === client){
+            if (contacts[i].data === client) {
                 setClientId(client);
                 return;
             }
@@ -173,7 +246,10 @@ const AppStates = (props) => {
                 addContact,
                 deleteContact,
                 contacts,
-                getContactsOnce
+                getContactsOnce,
+                profileDetails,
+                updateProfileDetails,
+                setClientId
             }}>
             {props.children}
         </appContext.Provider>
