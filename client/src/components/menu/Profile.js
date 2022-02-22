@@ -113,35 +113,12 @@ export default function Profile() {
     const {
         userId,
         profileDetails,
-        authToken,
-        theme
+        theme,
+        handleProfilePic
     } = React.useContext(appContext);
     let navigate = useNavigate();
 
     const [updatedBio, setUpdatedBio] = React.useState("");
-
-    // function to send picture uploaded to the server (AWS) through backend
-
-    const handleProfilePic = (e) => {
-        console.log(e.target.files[0]);
-        let data = new FormData();
-        data.append("profilePic", e.target.files[0]);
-        axios({
-            method: 'post',
-            url: `${process.env.REACT_APP_HOST}/api/user/profile_pic`,
-            headers: {
-                "auth-token": authToken,
-                "Content-Type": "ultipart/form-data",
-            },
-            data
-        })
-            .then((res) => {
-                console.log(res);
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
 
     return (
         <>
@@ -184,10 +161,10 @@ export default function Profile() {
                             variant="dot"
                         >
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                <Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src={profileDetails.pic ? profileDetails.pic : "/static/images/avatar/1.jpg"} />
                                 <label id="profilePic" style={{ position: 'absolute' }}>
                                     <LocalSeeOutlinedIcon sx={{ height: '4rem', width: '4rem' }} />
-                                    <input onChange={(e) => handleProfilePic(e)} style={{ display: 'none' }} type="file" />
+                                    <input onChange={(e) => handleProfilePic(e.target.files[0])} style={{ display: 'none' }} type="file" />
                                 </label>
                             </div>
                         </StyledBadge>

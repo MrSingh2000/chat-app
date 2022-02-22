@@ -80,19 +80,29 @@ router.get('/details', fetchuser, async (req, res) => {
 // save/update profile pricture of a user
 router.post('/profile_pic', [upload.single("profilePic"), fetchuser], async (req, res) => {
     try {
-        // const containerClient = blobServiceClient.getContainerClient(container);
-        // const content = req.file.buffer;
-        // const blobName = req.user.username + new Date().getTime();
-        // const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-        // const uploadBlobResponse = await blockBlobClient.upload(content,20);
-        // console.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId);
+        // check if user exists
+        let user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(401).json({ error: "Invalid Credentials" });
+        }
+        // get the uploaded file url from the request (with the help of middleware)
+        let url = req.file.url;
+        // updating the profile url of that particular user
+        if (url) {
+            let query = Details.findOneAndUpdate({ user: req.user.username },
+                {
+                    $set: {
+                        "pic": url
+                    }
+                });
+            // used this syntax because "query already executed" error occurs, this resolves it
+            await query.clone();
+            let details = await Details.findOne({ user: req.user.username });
+            return res.json({ details });
+        }
+        res.status(500).json({ error: "Failed to upload file, Try again!" });
 
-        // console.log(req.file.buffer.toString("utf-8"));
-        console.log(req.file);
-        console.log("URL: ", req.file.url);
-        res.send("done");
     } catch (error) {
-        console.log(error);
         res.status(500).json({ error: "Server Error Occurred! Try Again Later." });
     }
 });

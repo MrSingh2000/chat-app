@@ -13,8 +13,7 @@ const detailsSchema = new Schema({
         default: ""
     },
     pic: {
-        data: String,
-        contentType: String,
+        type: String,
         default: ""
     },
     status: [{

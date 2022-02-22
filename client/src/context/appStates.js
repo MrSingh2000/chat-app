@@ -106,10 +106,7 @@ const AppStates = (props) => {
             }
         }
         else if (param === "profile_pic") {
-            url = `${process.env.REACT_APP_HOST}/api/user/profile_pic`;
-            data = {
-                pic: value
-            }
+            setProfileDetails({ ...profileDetails, pic: value });
         }
         else if (param === "save_status") {
             url = `${process.env.REACT_APP_HOST}/api/user/bio`;
@@ -126,19 +123,39 @@ const AppStates = (props) => {
         else {
             return;
         }
+        if (param !== "profile_pic") {
+            axios({
+                url,
+                method: 'post',
+                headers: {
+                    "auth-token": authToken
+                },
+                data
+            })
+                .then((res) => {
+                    setProfileDetails(res.data.details);
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
+    }
+
+    // function to send picture uploaded to the server (AWS) through backend
+    const handleProfilePic = (file) => {
+        let data = new FormData();
+        data.append("profilePic", file);
         axios({
-            url,
             method: 'post',
+            url: `${process.env.REACT_APP_HOST}/api/user/profile_pic`,
             headers: {
-                "auth-token": authToken
+                "auth-token": authToken,
+                "Content-Type": "ultipart/form-data",
             },
             data
         })
             .then((res) => {
-                setProfileDetails(res.data.details);
-            })
-            .catch((err) => {
-                console.log(err);
+                updateProfileDetails("profile_pic", res.data.details.pic);
             })
     }
 
@@ -248,8 +265,8 @@ const AppStates = (props) => {
                 contacts,
                 getContactsOnce,
                 profileDetails,
-                updateProfileDetails,
-                setClientId
+                setClientId,
+                handleProfilePic
             }}>
             {props.children}
         </appContext.Provider>
