@@ -12,6 +12,7 @@ import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import { useNavigate } from 'react-router-dom';
 import appContext from '../../context/appContext';
 import Button from '@mui/material/Button';
+import { ThemeProvider } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -19,6 +20,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import Input from '@mui/material/Input';
+import LocalSeeOutlinedIcon from '@mui/icons-material/LocalSeeOutlined';
+import { CoPresentOutlined } from '@mui/icons-material';
+import axios from 'axios';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -109,50 +113,95 @@ export default function Profile() {
     const {
         userId,
         profileDetails,
-        authToken
+        authToken,
+        theme
     } = React.useContext(appContext);
     let navigate = useNavigate();
 
     const [updatedBio, setUpdatedBio] = React.useState("");
 
+    // function to send picture uploaded to the server (AWS) through backend
+
+    const handleProfilePic = (e) => {
+        console.log(e.target.files[0]);
+        let data = new FormData();
+        data.append("profilePic", e.target.files[0]);
+        axios({
+            method: 'post',
+            url: `${process.env.REACT_APP_HOST}/api/user/profile_pic`,
+            headers: {
+                "auth-token": authToken,
+                "Content-Type": "ultipart/form-data",
+            },
+            data
+        })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
 
     return (
         <>
-            <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{ mr: 2 }}
-                            onClick={() => { navigate(-1) }}
+            <ThemeProvider theme={theme}>
+                <Box sx={{ flexGrow: 1 }}>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <IconButton
+                                size="large"
+                                edge="start"
+                                color="inherit"
+                                aria-label="menu"
+                                sx={{ mr: 2 }}
+                                onClick={() => { navigate(-1) }}
+                            >
+                                <ArrowBackOutlinedIcon />
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar>
+                </Box>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: '10px',
+                    textAlign: 'center',
+                }}>
+                    <Paper elevation={4} sx={{
+                        width: {
+                            mobile: "90vw",
+                            tablet: "32rem",
+                        },
+                        padding: '10px',
+                        height: '80vh',
+                        backgroundColor: 'red',
+                    }}>
+                        <StyledBadge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            variant="dot"
                         >
-                            <ArrowBackOutlinedIcon />
-                        </IconButton>
-                    </Toolbar>
-                </AppBar>
-            </Box>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '10px', textAlign: 'center' }}>
-                <Paper elevation={4} sx={{ maxWidth: '32rem', padding: '10px', backgroundColor: 'red' }}>
-                    <StyledBadge
-                        overlap="circular"
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                        variant="dot"
-                    >
-                        <Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                    </StyledBadge>
-                    <h2>{userId}</h2>
-                    <div>
-                        <p style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>{profileDetails.bio ? profileDetails.bio : "Add your Bio"}
-                            <span style={{ cursor: 'pointer', marginLeft: '8px' }}>
-                                <AlertDialogSlide setUpdatedBio={setUpdatedBio} updatedBio={updatedBio} />
-                            </span>
-                        </p>
-                    </div>
-                </Paper>
-            </div>
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                                <label id="profilePic" style={{ position: 'absolute' }}>
+                                    <LocalSeeOutlinedIcon sx={{ height: '4rem', width: '4rem' }} />
+                                    <input onChange={(e) => handleProfilePic(e)} style={{ display: 'none' }} type="file" />
+                                </label>
+                            </div>
+                        </StyledBadge>
+                        <h2>{userId}</h2>
+                        <div>
+                            <p style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>{profileDetails.bio ? profileDetails.bio : "Add your Bio"}
+                                <span style={{ cursor: 'pointer', marginLeft: '8px' }}>
+                                    <AlertDialogSlide setUpdatedBio={setUpdatedBio} updatedBio={updatedBio} />
+                                </span>
+                            </p>
+                        </div>
+                    </Paper>
+                </Box>
+            </ThemeProvider>
         </>
     );
 }

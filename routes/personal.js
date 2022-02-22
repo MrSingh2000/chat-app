@@ -1,9 +1,28 @@
 const express = require('express');
 const router = express.Router();
+require("dotenv").config();
 const fetchuser = require('../middlewares/fetchuser');
 const Details = require('../models/Details');
 const User = require('../models/User');
 const { check, validationResult } = require('express-validator');
+
+// FOR AZURE DATA UPLOAD
+const multer = require('multer');
+var MulterAzureStorage = require('multer-azure-storage');
+
+var upload = multer({
+    storage: new MulterAzureStorage({
+        azureStorageConnectionString: process.env.AZURE_CONNECTION_STRING,
+        containerName: process.env.AZURE_CONTAINER,
+        containerSecurity: 'blob',
+        // fileName: req.user.username + "profilePic"
+    })
+})
+
+const AzureStorageBlob = require("@azure/storage-blob");
+const { BlobServiceClient } = require("@azure/storage-blob");
+const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_CONNECTION_STRING);
+const container = process.env.AZURE_CONTAINER
 
 // save/update a bio of the user
 router.post('/bio', fetchuser, async (req, res) => {
@@ -59,8 +78,23 @@ router.get('/details', fetchuser, async (req, res) => {
 });
 
 // save/update profile pricture of a user
-router.post('/profile_pic', (req, res) => {
-    // TODO: Complete the Route
+router.post('/profile_pic', [upload.single("profilePic"), fetchuser], async (req, res) => {
+    try {
+        // const containerClient = blobServiceClient.getContainerClient(container);
+        // const content = req.file.buffer;
+        // const blobName = req.user.username + new Date().getTime();
+        // const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+        // const uploadBlobResponse = await blockBlobClient.upload(content,20);
+        // console.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId);
+
+        // console.log(req.file.buffer.toString("utf-8"));
+        console.log(req.file);
+        console.log("URL: ", req.file.url);
+        res.send("done");
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Server Error Occurred! Try Again Later." });
+    }
 });
 
 // save new status of the user

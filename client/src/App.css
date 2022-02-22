@@ -23,3 +23,16 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* For the profile pic hover effect in profile section*/
+#profilePic{
+  opacity: 0;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+#profilePic:hover{
+  opacity: 0.5;
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0.562);
+}
