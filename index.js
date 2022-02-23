@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 const bodyParser = require("body-parser");
-const saveMessageToDb = require('./functions/dbFunctions');
+const { saveMessageToDb, getChat } = require('./functions/dbFunctions');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -60,6 +60,15 @@ io.on("connection", (socket) => {
     // let id = socket.id;
     // sending the id to the client on first initialization
     // socket.emit("myId", { id });
+
+    // get the chats of the user with another particular user
+    socket.on("sendChat", async (payload) => {
+        // due to a problem (i saved the chat of both the users on different collections hence need to abstract both of them)
+        let response = await getChat(payload.user, payload.client);
+        let response2 = await getChat(payload.client, payload.user);
+        // sending/emmiting response to the client side
+        io.emit("sendChat", {response, response2});
+    });
 
     // declaring what to do when an action named "sendMes" is emmited
     socket.on("sendMes", (payload) => {

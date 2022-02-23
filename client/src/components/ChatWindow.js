@@ -48,11 +48,19 @@ export default function ChatWindow() {
                 display: {
                     mobile: "none",
                     tablet: "block"
-                }, height: '85vh', backgroundColor: 'red'
+                }, height: '85vh',
+                backgroundColor: '#3B8AD9'
             }}>
                 <Paper >
                     <div className="scrollBar" style={{ overflowY: 'scroll' }}>
-                        <div style={{ backgroundColor: 'white', margin: '2px' }}>
+                        <div style={{ 
+                            backgroundColor: '#032A7F',
+                             margin: '5px',
+                             color: 'white',
+                             borderRadius: '5px',
+                             textAlign: 'center',
+                             fontWeight: 'bold'
+                              }}>
                             {clientId}
                         </div>
                         {chat.map((payload, index) => {
@@ -60,6 +68,7 @@ export default function ChatWindow() {
                                 <div key={index} style={{
                                     width: "100%",
                                     display: 'flex',
+                                    backgroundColor: '#3B8AD9',
                                     justifyContent: `${payload.from !== userId ? 'left' : 'right'}`,
                                 }}>
                                     <Paper sx={{
@@ -79,7 +88,7 @@ export default function ChatWindow() {
                     <div className="chat-type">
                         <TextField
                             id="outlined-multiline-flexible"
-                            label="Multiline"
+                            label="Message"
                             multiline
                             maxRows={4}
                             value={message}
@@ -102,9 +111,9 @@ export default function ChatWindow() {
                     laptop: "60vw",
                 },
                 display: {
-                    mobile: `${clientId ? "block": "none"}`,
+                    mobile: `${clientId ? "block" : "none"}`,
                     tablet: "none"
-                }, height: '85vh', backgroundColor: 'red'
+                }, height: '85vh', backgroundColor: '#3B8AD9'
             }}>
                 <Paper>
                     <Box sx={{ flexGrow: 1, maxHeight: '2rem', backgroundColor: 'pink' }}>
@@ -162,7 +171,7 @@ export default function ChatWindow() {
                     <div className="chat-type">
                         <TextField
                             id="outlined-multiline-flexible"
-                            label="Multiline"
+                            label="Message"
                             multiline
                             maxRows={4}
                             value={message}

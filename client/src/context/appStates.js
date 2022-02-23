@@ -89,10 +89,9 @@ const AppStates = (props) => {
         })
             .then((res) => {
                 setProfileDetails(res.data.details);
-                console.log(res.data.details);
             })
             .catch((err) => {
-                console.log(err);
+                console.log("Error in get Profile Details: ", err);
             })
     }
 
@@ -136,7 +135,7 @@ const AppStates = (props) => {
                     setProfileDetails(res.data.details);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.log("Error in update profile details: ", err);
                 })
         }
     }
@@ -173,7 +172,7 @@ const AppStates = (props) => {
                     setContacts([...res.data.contact.contacts]);
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.log("Error in getting contacts list: ", err);
                 })
         }
     }
@@ -183,19 +182,54 @@ const AppStates = (props) => {
         getProfileDetails();
     }, [authToken]);
 
-
-
     // change the client ID (used in case of searched click)
     const handleChangeClientId = (client) => {
+        let clientPresent = false;
         // check if contact already exists, and if yes dont send backend request for contact add
         for (let i = 0; i < contacts.length; i++) {
-            console.log(contacts[i].data)
             if (contacts[i].data === client) {
                 setClientId(client);
-                return;
+                clientPresent = true;
+                break;
             }
         }
-        addContact(client);
+        if (!clientPresent) {
+            addContact(client);
+        }
+        // sending SendChat request to backend for that particular user
+        socket.emit("sendChat", { user: userId, client: client });
+        // handling reciveing of user chat on client side
+        socket.on("sendChat", (payload) => {
+            // setChat()
+            let c1, c2;
+            if(payload.response){
+                c1 = payload.response.message;
+            }
+            if(payload.response2){
+                c2 = payload.response2.message;
+            }
+            let newChat = [];
+            for(let i = 0; i < c1.length; i++){
+                newChat.push({
+                    from: userId,
+                    to: client,
+                    message: c1[i].data,
+                    time: c1[i].date
+                })
+            }
+            for(let i = 0; i < c2.length; i++){
+                newChat.push({
+                    from: client,
+                    to: userId,
+                    message: c2[i].data,
+                    time: c2[i].date
+                })
+            }
+            let sortedChat = newChat.sort((a, b) => {
+                return a.time > b.time;
+            });
+            setChat(sortedChat);
+        })
         setClientId(client);
     }
 
@@ -212,18 +246,8 @@ const AppStates = (props) => {
             })
     }
 
-
+    // useEffect hook for user logged in details verification (runs always)
     useEffect(() => {
-        // handling sending private message (client Side)
-        socket.on("privateMes", (payload) => {
-            console.log(payload);
-            if (payload.to === userId) {
-                setChat([...chat, payload]);
-            }
-            else {
-                console.log("Its not matching the userId");
-            }
-        });
         let localId = localStorage.getItem("userId");
         let localToken = localStorage.getItem("authToken");
         if (localToken) {
@@ -232,6 +256,14 @@ const AppStates = (props) => {
         }
     });
 
+    useEffect(() => {
+        // handling sending private message (client Side)
+        socket.on("privateMes", (payload) => {
+            if (payload.to === userId) {
+                setChat([...chat, payload]);
+            }
+        });
+    })
 
     // sending a message (emitting sendMes action)
     const sendMessage = (val) => {

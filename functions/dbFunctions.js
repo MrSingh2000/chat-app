@@ -34,4 +34,16 @@ const saveMessageToDb = async (payload) => {
     }
 }
 
-module.exports = saveMessageToDb;
+// get the particular chat history from db
+const getChat = (to, from) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let chat = await Chat.findOne({from, to});
+            resolve(chat);
+        } catch (error) {
+            reject({error: "DB error occurred! Try again later!"});
+        }
+    })
+}
+
+module.exports = {saveMessageToDb, getChat};
