@@ -20,6 +20,7 @@ import appContext from '../context/appContext';
 import { Link } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
+import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -136,36 +137,12 @@ export default function TopNav() {
             onClose={handleMobileMenuClose}
         >
             <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
-                <p>Messages</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton
-                    size="large"
-                    aria-label="show 17 new notifications"
-                    color="inherit"
-                >
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
-                <p>Profile</p>
+                <Link to="/status" style={{ textDecoration: "none", color: "black" }}>
+                    <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                        <CollectionsOutlinedIcon />
+                    </IconButton>
+                    <p>Status</p>
+                </Link>
             </MenuItem>
         </Menu>
     );
@@ -200,7 +177,6 @@ export default function TopNav() {
                                             Profile
                                         </Link>
                                     </MenuItem>
-                                    <MenuItem onClick={popupState.close}>My account</MenuItem>
                                     <MenuItem onClick={popupState.close}>Logout</MenuItem>
                                 </Menu>
                             </React.Fragment>
@@ -238,29 +214,9 @@ export default function TopNav() {
                     <Box sx={{ flexGrow: 1 }} />
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                            <Badge badgeContent={4} color="error">
-                                <MailIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="inherit"
-                        >
-                            <Badge badgeContent={17} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            <AccountCircle />
+                            <Link to="/status" style={{ textDecoration: "none", color: "white" }}>
+                                <CollectionsOutlinedIcon />
+                            </Link>
                         </IconButton>
                     </Box>
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

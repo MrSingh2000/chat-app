@@ -72,6 +72,7 @@ const AppStates = (props) => {
         })
             .then((res) => {
                 setContacts([...res.data]);
+                setClientId();
             })
             .catch((err) => {
                 console.log("Error in Contact Delete: ", err);
@@ -182,8 +183,35 @@ const AppStates = (props) => {
         getProfileDetails();
     }, [authToken]);
 
+    // update the last message of a certain contact from the frontend side (don't send backend request)
+    // TODO: Can implement last chat feature to be shown on chats (can be implemented in future)
+    const updateLastMessage = (target, message) => {
+        let oldContact = contacts;
+        for (let i = 0; i < oldContact.length; i++) {
+            if (i === target) {
+                i.lastChat = message;
+                return;
+            }
+        }
+    }
+
+    // get user chat
+    const getUserChat = (from, to) => {
+        // handling reciveing of user chat on client side
+        socket.on("sendChat", (payload) => {
+            if (payload.response === null) {
+                setChat([]);
+                return;
+            }
+            setChat(payload.response.message);
+        })
+    }
+
     // change the client ID (used in case of searched click)
     const handleChangeClientId = (client) => {
+        if (client === userId) {
+            return;
+        }
         let clientPresent = false;
         // check if contact already exists, and if yes dont send backend request for contact add
         for (let i = 0; i < contacts.length; i++) {
@@ -198,39 +226,8 @@ const AppStates = (props) => {
         }
         // sending SendChat request to backend for that particular user
         socket.emit("sendChat", { user: userId, client: client });
-        // handling reciveing of user chat on client side
-        socket.on("sendChat", (payload) => {
-            // setChat()
-            let c1, c2;
-            if(payload.response){
-                c1 = payload.response.message;
-            }
-            if(payload.response2){
-                c2 = payload.response2.message;
-            }
-            let newChat = [];
-            for(let i = 0; i < c1.length; i++){
-                newChat.push({
-                    from: userId,
-                    to: client,
-                    message: c1[i].data,
-                    time: c1[i].date
-                })
-            }
-            for(let i = 0; i < c2.length; i++){
-                newChat.push({
-                    from: client,
-                    to: userId,
-                    message: c2[i].data,
-                    time: c2[i].date
-                })
-            }
-            let sortedChat = newChat.sort((a, b) => {
-                return a.time > b.time;
-            });
-            setChat(sortedChat);
-        })
         setClientId(client);
+        getUserChat(userId, client);
     }
 
     // search function used in navbar for searching a clientID
@@ -256,6 +253,7 @@ const AppStates = (props) => {
         }
     });
 
+
     useEffect(() => {
         // handling sending private message (client Side)
         socket.on("privateMes", (payload) => {
@@ -268,13 +266,51 @@ const AppStates = (props) => {
     // sending a message (emitting sendMes action)
     const sendMessage = (val) => {
         setChat([...chat, {
-            message: val,
-            from: userId,
-            to: clientId
+            data: val,
+            user: userId,
         }])
+        // updateLastMessage(clientId, val);
         socket.emit("privateMes", { message: val, from: userId, to: clientId });
     }
 
+    // PLAYING WITH STATUS FUNCTIONALITY HERE: 
+
+    const [allStatus, setAllStatus] = useState([]);
+
+    // to get the status
+    const getStatus = () => {
+        // get all the status(s) availalble on the cloud
+        axios({
+            url: `${process.env.REACT_APP_HOST}/api/status/all`,
+            method: 'get',
+        })
+            .then((res) => {
+                setAllStatus(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
+    // add a status of the user
+    const addStatus = (file) => {
+        let data = new FormData();
+        data.append("status", file);
+        axios({
+            url: `${process.env.REACT_APP_HOST}/api/status/add`,
+            method: 'post',
+            headers: {
+                "auth-token": authToken,
+            },
+            data
+        })
+            .then((res) => {
+                getStatus();
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
 
     return (
 
@@ -298,7 +334,11 @@ const AppStates = (props) => {
                 getContactsOnce,
                 profileDetails,
                 setClientId,
-                handleProfilePic
+                handleProfilePic,
+                addStatus,
+                getProfileDetails,
+                allStatus,
+                getStatus,
             }}>
             {props.children}
         </appContext.Provider>

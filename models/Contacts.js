@@ -20,6 +20,14 @@ const contactSchema = new Schema({
             default: Date.now,
         },
         lastChat: {
+            from: {
+                type: String,
+            },
+            mess: {
+                type: String
+            }
+        },
+        pic: {
             type: String
         }
     }],

@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
-
+import chatIcon from "../assets/chat.png";
 
 export default function ChatWindow() {
     let {
@@ -51,16 +51,17 @@ export default function ChatWindow() {
                 }, height: '85vh',
                 backgroundColor: '#3B8AD9'
             }}>
-                <Paper >
+                {clientId && (<Paper elevation={0} >
                     <div className="scrollBar" style={{ overflowY: 'scroll' }}>
-                        <div style={{ 
+                        <div style={{
                             backgroundColor: '#032A7F',
-                             margin: '5px',
-                             color: 'white',
-                             borderRadius: '5px',
-                             textAlign: 'center',
-                             fontWeight: 'bold'
-                              }}>
+                            margin: '5px',
+                            color: 'white',
+                            borderRadius: '5px',
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                            display: `${clientId ? "block" : "none"}`
+                        }}>
                             {clientId}
                         </div>
                         {chat.map((payload, index) => {
@@ -69,9 +70,9 @@ export default function ChatWindow() {
                                     width: "100%",
                                     display: 'flex',
                                     backgroundColor: '#3B8AD9',
-                                    justifyContent: `${payload.from !== userId ? 'left' : 'right'}`,
+                                    justifyContent: `${payload.user !== userId ? 'left' : 'right'}`,
                                 }}>
-                                    <Paper sx={{
+                                    <Paper elevation={0} sx={{
                                         minHeight: '10px',
                                         maxWidth: '25rem',
                                         p: '2px',
@@ -79,7 +80,7 @@ export default function ChatWindow() {
                                         mx: '5px',
                                         my: '3px'
                                     }}>
-                                        {payload.message}
+                                        {payload.data}
                                     </Paper>
                                 </div>
                             )
@@ -99,7 +100,20 @@ export default function ChatWindow() {
                             Send
                         </Button>
                     </div>
-                </Paper>
+                </Paper>)}
+                {!clientId && (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <div style={{ marginTop: '100px' }}>
+                            <div style={{ fontSize: '20px', marginBottom: '10px' }}>
+                                <span style={{ fontWeight: 'bolder' }}>Search</span> or <span style={{ fontWeight: 'bolder' }}>Tap</span> a <span style={{ fontWeight: 'bolder', color: 'white' }}>userName</span> to begin Chat!
+                            </div>
+                            <div style={{ textAlign: 'center' }}>
+                                <img src={chatIcon} alt="ChatIcon" height="150px" />
+                            </div>
+                        </div>
+                    </div>
+                )
+                }
             </Box>
 
             {/* MOBILE VERSION OF CHAT WINDOW */}
@@ -115,9 +129,11 @@ export default function ChatWindow() {
                     tablet: "none"
                 }, height: '85vh', backgroundColor: '#3B8AD9'
             }}>
-                <Paper>
+                <Paper elevation={0}>
                     <Box sx={{ flexGrow: 1, maxHeight: '2rem', backgroundColor: 'pink' }}>
                         <div style={{
+                            backgroundColor: '#032A7F',
+                            color: "white",
                             width: '100%',
                             display: 'flex',
                             position: 'sticky',
@@ -141,7 +157,6 @@ export default function ChatWindow() {
                             }}>
                                 {clientId}
                             </div>
-                            {/* </div> */}
                         </div>
                     </Box>
                     <div className="scrollBar" style={{ overflowY: 'scroll' }}>
@@ -150,11 +165,12 @@ export default function ChatWindow() {
                         {chat.map((payload, index) => {
                             return (
                                 <div key={index} style={{
+                                    backgroundColor: '#3B8AD9',
                                     width: "100%",
                                     display: 'flex',
-                                    justifyContent: `${payload.from !== userId ? 'left' : 'right'}`,
+                                    justifyContent: `${payload.user !== userId ? 'left' : 'right'}`,
                                 }}>
-                                    <Paper sx={{
+                                    <Paper elevation={0} sx={{
                                         minHeight: '10px',
                                         maxWidth: '25rem',
                                         p: '2px',
@@ -162,7 +178,7 @@ export default function ChatWindow() {
                                         mx: '5px',
                                         my: '3px'
                                     }}>
-                                        {payload.message}
+                                        {payload.data}
                                     </Paper>
                                 </div>
                             )

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fetchuser = require('../middlewares/fetchuser');
 const Contacts = require('../models/Contacts');
+const Details = require('../models/Details');
 const User = require('../models/User');
 const { check, validationResult } = require('express-validator');
 
@@ -36,10 +37,26 @@ router.post('/add_contact', fetchuser, async (req, res) => {
         if (!userExists) {
             return res.status(401).json({ errror: "Invalid Credentials" });
         }
+        let profilePic = await Details.findOne({ user: req.body.clientId }, { _id: 0, pic: 1 });
+        console.log("ProfilePic: ", profilePic);
+        if (profilePic === null) {
+            profilePic = "nopic";
+        }
+        else if (profilePic.pic === null) {
+            profilePic = "nopic";
+        }
+        else if (profilePic.pic === "") {
+            profilePic = "nopic";
+        }
+        else {
+            profilePic = profilePic.pic;
+        }
+
         // create new contact object
         let newClient = {
             data: req.body.clientId,
-            lastChat: ""
+            lastChat: "",
+            pic: profilePic
         };
         // get the existing contact details for the user
         let contact = await Contacts.findOne({ user });
@@ -71,12 +88,14 @@ router.post('/add_contact', fetchuser, async (req, res) => {
                 user,
                 contacts: [{
                     data: req.body.clientId,
-                    lastChat: ""
+                    lastChat: "",
+                    pic: profilePic
                 }]
             });
             return res.json({ contact });
         }
     } catch (error) {
+        console.log("Error: ", error);
         res.status(500).json({ error: "Server Errror Occurred! Try again Later." });
     }
 });
@@ -126,7 +145,7 @@ router.get('/my_contacts', fetchuser, async (req, res) => {
         }
         // get existing contact list for the user
         let contact = await Contacts.findOne({ user });
-         res.json({contact});
+        res.json({ contact });
     } catch (error) {
         res.status(500).json({ error: "Server Errror Occurred! Try again Later." });
     }

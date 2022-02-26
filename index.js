@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 
 const bodyParser = require("body-parser");
-const { saveMessageToDb, getChat } = require('./functions/dbFunctions');
+const { saveMessageToDb, getChat, setLastChat } = require('./functions/dbFunctions');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -31,13 +31,16 @@ connectToMongo();
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/search', require('./routes/clients'));
 app.use('/api/user', require('./routes/personal'));
+app.use('/api/status', require('./routes/status'));
 
+
+// WE CAN ALSO GENERATE OUR OWN SOCKET IO IDS
 // io.engine.generateId = (req) => {
 // return Math.random()*1000; 
 // must be unique across all Socket.IO servers
 // }
 
-let liveUsers = [];
+let liveUsers = new Set();
 
 io.use((socket, next) => {
     const token = socket.handshake.auth.token;
@@ -54,7 +57,7 @@ io.use((socket, next) => {
 // connection is established when client server starts
 io.on("connection", (socket) => {
     socket.id = socket.handshake.auth.userId;
-    liveUsers.push(socket);
+    liveUsers.add(socket);
 
     // getting the unique id of that particular socket
     // let id = socket.id;
@@ -67,16 +70,19 @@ io.on("connection", (socket) => {
         let response = await getChat(payload.user, payload.client);
         let response2 = await getChat(payload.client, payload.user);
         // sending/emmiting response to the client side
-        io.emit("sendChat", {response, response2});
+        io.emit("sendChat", { response, response2 });
     });
 
     // declaring what to do when an action named "sendMes" is emmited
     socket.on("sendMes", (payload) => {
         // console.log("This is Payload: ", payload);
         // sending data to the client in response to the action emmited
+        setLastChat(payload.from, payload.to, payload.message);
+        console.log(payload);
         io.emit("sendMes", { ...payload });
     });
 
+    // maybe this line is not ever used in code
     socket.join("privateRoom");
 
     // send a private message to someone with his/her userId which is in payload i.e. payload.to
@@ -89,7 +95,8 @@ io.on("connection", (socket) => {
     });
 
     socket.on("disconnect", (socket) => {
-        liveUsers.splice(liveUsers.indexOf(socket), 1);
+        // liveUsers.splice(liveUsers.indexOf(socket), 1);
+        liveUsers.delete(socket);
     });
 })
 

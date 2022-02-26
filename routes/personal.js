@@ -19,6 +19,7 @@ var upload = multer({
     })
 })
 
+// We can also use these base libs to do the same we are doing with MulterAzureStorage
 const AzureStorageBlob = require("@azure/storage-blob");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_CONNECTION_STRING);
@@ -107,14 +108,23 @@ router.post('/profile_pic', [upload.single("profilePic"), fetchuser], async (req
     }
 });
 
-// save new status of the user
-router.post('/save_status', (req, res) => {
-    // TODO: Complete the Route
-});
 
-// Delete status of the user
-router.delete('/delete_status', (req, res) => {
-    // TODO: Complete the Route
+// get only profile pic of an user
+router.get('/c_profile', fetchuser, async (req, res) => {
+    try {
+        let user = await User.findById(req.user.id);
+        if (!user) {
+            res.status(404).json({ error: "Invalid Credentials" });
+        }
+        let contact = req.query.client;
+        let contactDetails = await Details.findOne({ user: contact });
+        if (!contactDetails) {
+            return res.json({ pic: "" });
+        }
+        res.json({ pic: contactDetails.pic });
+    } catch (error) {
+        res.status(500).json({ error: "Server Error Occurred! Try Again Later." });
+    }
 });
 
 module.exports = router;

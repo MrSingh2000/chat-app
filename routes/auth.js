@@ -4,6 +4,7 @@ const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Details = require('../models/Details');
 require("dotenv").config();
 
 // ROUTE 1: login route
@@ -67,6 +68,7 @@ router.post('/signup', async (req, res) => {
             }
         }
         const authToken = jwt.sign(data, process.env.JWT_SECRET);
+        // creating a empty details document for easiness in upcoming code (and also reduce some errors)
         res.json({authToken});
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error Occurred!" });

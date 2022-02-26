@@ -3,17 +3,14 @@ const { Schema } = mongoose;
 
 // This is the chat model to be used in server database as a collection
 const chatSchema = new Schema({
-    from: {
+    between: {
         type: String,
-        required: true,
-        ref: 'user'
-    },
-    to: {
-        type: String,
-        required: true,
-        ref: 'user'
+        required: true
     },
     message: [{
+        user: {
+            type: String,
+        },
         data: {
             type: String,
         },

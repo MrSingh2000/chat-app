@@ -21,8 +21,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import Input from '@mui/material/Input';
 import LocalSeeOutlinedIcon from '@mui/icons-material/LocalSeeOutlined';
-import { CoPresentOutlined } from '@mui/icons-material';
-import axios from 'axios';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -153,7 +151,7 @@ export default function Profile() {
                         },
                         padding: '10px',
                         height: '80vh',
-                        backgroundColor: 'red',
+                        backgroundColor: '#85BEF7',
                     }}>
                         <StyledBadge
                             overlap="circular"
@@ -164,7 +162,7 @@ export default function Profile() {
                                 <Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src={profileDetails.pic ? profileDetails.pic : "/static/images/avatar/1.jpg"} />
                                 <label id="profilePic" style={{ position: 'absolute' }}>
                                     <LocalSeeOutlinedIcon sx={{ height: '4rem', width: '4rem' }} />
-                                    <input onChange={(e) => handleProfilePic(e.target.files[0])} style={{ display: 'none' }} type="file" />
+                                    <input onChange={(e) => handleProfilePic(e.target.files[0])} style={{ display: 'none' }} type="file" accept="image/png, image/gif, image/jpeg" />
                                 </label>
                             </div>
                         </StyledBadge>

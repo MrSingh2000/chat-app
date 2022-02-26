@@ -7,6 +7,7 @@ import Signup from './components/register/Signup';
 import appContext from './context/appContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Profile from './components/menu/Profile';
+import Status from './components/Status';
 
 function App() {
   // INITIAL CODE FOR PRACTICE
@@ -66,6 +67,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route exact path="" element={<Home />} />
           <Route exact path="profile" element={<Profile />} />
+          <Route exact path="status" element={<Status />} />
         </Route>
         <Route path="*" element={(<div>Page doesn't exists</div>)} />
       </Routes>

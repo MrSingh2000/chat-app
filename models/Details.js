@@ -16,9 +16,8 @@ const detailsSchema = new Schema({
         type: String,
         default: ""
     },
-    status: [{
-        data: String,
-        contentType: String,
+    userStatus: [{
+        type: String,
         default: ""
     }]
 });

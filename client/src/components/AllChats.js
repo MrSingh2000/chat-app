@@ -9,7 +9,8 @@ import Typography from '@mui/material/Typography';
 import appContext from '../context/appContext';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import { ThemeProvider } from '@mui/material/styles';
-
+import axios from "axios";
+import pp from "../assets/user.png";
 
 export default function AllChats() {
   const {
@@ -17,8 +18,12 @@ export default function AllChats() {
     handleChangeClientId,
     deleteContact,
     theme,
-    clientId
+    clientId,
+    authToken,
+    urls
   } = React.useContext(appContext);
+
+
   return (
     <ThemeProvider theme={theme}>
       <List sx={{
@@ -35,7 +40,7 @@ export default function AllChats() {
             <div key={index} style={{ cursor: "pointer" }} onClick={() => { handleChangeClientId(client.data) }}>
               <ListItem alignItems="flex-start">
                 <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                  <Avatar alt="Remy Sharp" src={client.pic === "nopic" ? pp : client.pic} />
                 </ListItemAvatar>
                 <ListItemText
                   primary={client.data}
@@ -44,12 +49,15 @@ export default function AllChats() {
                       <Typography
                         sx={{ display: 'inline' }}
                         component="span"
-                        variant="body2"
+                        variant="body1"
                         color="text.primary"
                       >
-                        You
+                        <span style={{
+                          visibility: 'hidden',
+                        }}>
+                          I'll be in your neighborhood doing
+                        </span>
                       </Typography>
-                      {" — I'll be in your neighborhood doing errands this…"}
                     </React.Fragment>
                   }
                 />
@@ -57,7 +65,10 @@ export default function AllChats() {
                   <DeleteForeverOutlinedIcon />
                 </div>
               </ListItem>
-              <Divider variant="inset" component="li" />
+              <Divider sx={{
+                position: 'relative',
+                top: '-10px'
+              }} variant="inset" component="li" />
             </div>
           )
         })}
