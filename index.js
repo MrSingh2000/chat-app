@@ -33,6 +33,9 @@ app.use('/api/search', require('./routes/clients'));
 app.use('/api/user', require('./routes/personal'));
 app.use('/api/status', require('./routes/status'));
 
+app.get('/', (req, res) => {
+    res.sendFile(`${__dirname}/pages/backendHomepage.html`);
+  });
 
 // WE CAN ALSO GENERATE OUR OWN SOCKET IO IDS
 // io.engine.generateId = (req) => {
@@ -46,7 +49,6 @@ io.use((socket, next) => {
     const token = socket.handshake.auth.token;
     jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
         if (error) {
-            console.log("Error in JWT token");
             socket.disconnect();
             return;
         }
