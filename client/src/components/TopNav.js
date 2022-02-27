@@ -21,6 +21,7 @@ import { Link } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import CollectionsOutlinedIcon from '@mui/icons-material/CollectionsOutlined';
+import appIcon from "../assets/appIcon.png";
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -177,7 +178,16 @@ export default function TopNav() {
                                             Profile
                                         </Link>
                                     </MenuItem>
-                                    <MenuItem onClick={popupState.close}>Logout</MenuItem>
+                                    <MenuItem onClick={popupState.close}>
+                                        <Link to="/about" style={{ textDecoration: "none", color: "black" }}>
+                                            About Us
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={() => { localStorage.clear() }}>
+                                        <Link to="/login" style={{ textDecoration: "none", color: "black" }}>
+                                            Logout
+                                        </Link>
+                                    </MenuItem>
                                 </Menu>
                             </React.Fragment>
                         )}
@@ -188,7 +198,7 @@ export default function TopNav() {
                         component="div"
                         sx={{ display: { xs: 'none', sm: 'block' } }}
                     >
-                        Chatty {userId}
+                        <img style={{position: 'relative', top: '5px'}} src={appIcon} alt="Icon" height="30px"/> Chatty
                     </Typography>
                     <div >
                         <Search>

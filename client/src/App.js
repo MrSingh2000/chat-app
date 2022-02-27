@@ -8,6 +8,7 @@ import appContext from './context/appContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Profile from './components/menu/Profile';
 import Status from './components/Status';
+import About from './components/menu/About';
 
 function App() {
   // INITIAL CODE FOR PRACTICE
@@ -68,6 +69,7 @@ function App() {
           <Route exact path="" element={<Home />} />
           <Route exact path="profile" element={<Profile />} />
           <Route exact path="status" element={<Status />} />
+          <Route exact path="about" element={<About />} />
         </Route>
         <Route path="*" element={(<div>Page doesn't exists</div>)} />
       </Routes>
