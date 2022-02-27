@@ -21,7 +21,7 @@ const io = require("socket.io")(server, {
     // allowing cross-origin
     cors: {
         origin: "*",
-        // allowedHeaders: ["X-authToken"],
+        credentials: true,
     }
 });
 
