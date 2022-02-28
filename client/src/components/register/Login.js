@@ -8,9 +8,10 @@ import PublishOutlinedIcon from '@mui/icons-material/PublishOutlined';
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import appContext from '../../context/appContext';
+import Alert from '@mui/material/Alert';
 
 export default function Login() {
-  const { setAuthToken, setUserId } = useContext(appContext);
+  const { setAuthToken, setUserId, error, setError, errorType, setErrorType } = useContext(appContext);
   const navigate = useNavigate();
   const [details, setDetails] = useState({ username: "", password: "" });
   const handleChange = (e) => {
@@ -28,15 +29,31 @@ export default function Login() {
         setUserId(details.username);
         localStorage.setItem("authToken", res.data.authToken);
         localStorage.setItem("userId", details.username);
-        setDetails({username: "", password: ""});
+        setDetails({ username: "", password: "" });
+        // setError("Login Successful!");
+        // setErrorType("success");
+        // setTimeout(() => {
+        //   setError();
+        //   console.log("redirecting")
+        // }, 1000);
         navigate("/");
       })
       .catch((err) => {
-        console.log(err);
+        setError(err.response.data.error);
+        setErrorType("error");
+        setTimeout(() => {
+          setError();
+        }, 3000);
       })
   }
 
-  return (<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '3rem' }}>
+  return (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '3rem' }}>
+    {error && (<Alert
+      sx={{ position: 'absolute', top: '2px' }}
+      variant="filled"
+      severity={errorType}>
+      {error}
+    </Alert>)}
     <Paper elevation={3} sx={{
       width: '18rem',
       // backgroundColor: 'red',

@@ -4,7 +4,7 @@ import appContext from "./appContext";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 
-const socket = io.connect("http://localhost:5000", {
+const socket = io.connect("https://my-chat-app-backend.herokuapp.com/", {
     auth: {
         token: localStorage.getItem("authToken"),
         userId: localStorage.getItem("userId")
@@ -37,6 +37,9 @@ const AppStates = (props) => {
         pic: "",
         status: ""
     });
+    // state for error management in app on client side
+    const [error, setError] = useState();
+    const [errorType, setErrorType] = useState("error");
 
     // add the searched & clicked person in the contact list of the user
     const addContact = (client) => {
@@ -339,6 +342,8 @@ const AppStates = (props) => {
                 getProfileDetails,
                 allStatus,
                 getStatus,
+                error,
+                setError,
             }}>
             {props.children}
         </appContext.Provider>

@@ -8,9 +8,10 @@ import PublishOutlinedIcon from '@mui/icons-material/PublishOutlined';
 import { Link, useNavigate } from "react-router-dom";
 import appContext from '../../context/appContext';
 import axios from "axios";
+import Alert from '@mui/material/Alert';
 
 export default function Signup() {
-  const { setUserId, setAuthToken } = useContext(appContext);
+  const { setUserId, setAuthToken, error, setError } = useContext(appContext);
   const navigate = useNavigate();
   const [details, setDetails] = useState({ username: "", password: "" });
   const handleChange = (e) => {
@@ -27,14 +28,23 @@ export default function Signup() {
         setUserId(details.username);
         localStorage.setItem("authToken", res.data.authToken);
         localStorage.setItem("userId", details.username);
-        setDetails({username: "", password: ""});
+        setDetails({ username: "", password: "" });
         navigate("/");
       })
       .catch((err) => {
-        console.log(err);
+        setError(err.response.data.error);
+        setTimeout(() => {
+          setError();
+        }, 3000);
       })
   }
-  return (<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '3rem' }}>
+  return (<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '3rem' }}>
+    {error && (<Alert
+      sx={{ position: 'absolute', top: '2px' }}
+      variant="filled"
+      severity="error">
+      {error}
+    </Alert>)}
     <Paper elevation={3} sx={{
       width: '18rem',
       // backgroundColor: 'red',
