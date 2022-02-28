@@ -43,6 +43,7 @@ export default function Login() {
         setErrorType("error");
         setTimeout(() => {
           setError();
+          console.log("No error")
         }, 3000);
       })
   }

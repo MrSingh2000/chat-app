@@ -353,6 +353,8 @@ const AppStates = (props) => {
                 setError,
                 loading,
                 setLoading,
+                errorType,
+                setErrorType
             }}>
             {props.children}
         </appContext.Provider>
