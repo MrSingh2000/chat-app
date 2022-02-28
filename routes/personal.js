@@ -98,15 +98,15 @@ router.post('/profile_pic', [upload.single("profilePic"), fetchuser], async (req
                             "pic": url
                         }
                     });
+                // used this syntax because "query already executed" error occurs, this resolves it
+                await query.clone();
             }
             else {
-                query = Details.save({
+                query = await Details.create({
                     user: req.user.username,
                     pic: url
                 });
             }
-            // used this syntax because "query already executed" error occurs, this resolves it
-            await query.clone();
             console.log("url: ", url);
             let details = await Details.findOne({ user: req.user.username });
             console.log("Details: ", details);
