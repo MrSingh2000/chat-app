@@ -98,12 +98,15 @@ router.post('/profile_pic', [upload.single("profilePic"), fetchuser], async (req
                 });
             // used this syntax because "query already executed" error occurs, this resolves it
             await query.clone();
+            console.log("url: ", url);
             let details = await Details.findOne({ user: req.user.username });
+            console.log("Details: ", details);
             return res.json({ details });
         }
         res.status(500).json({ error: "Failed to upload file, Try again!" });
 
     } catch (error) {
+        console.log("Error: ", error);
         res.status(500).json({ error: "Server Error Occurred! Try Again Later." });
     }
 });
