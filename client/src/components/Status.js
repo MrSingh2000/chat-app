@@ -11,13 +11,17 @@ import { useNavigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import axios from "axios";
+import nostatus from "../assets/nostatus.png";
+import loader from "../assets/loader.gif";
 
 function Status() {
     const {
-        userId,
         theme,
         addStatus,
-        getStatus
+        getStatus,
+        allStatus,
+        loading,
+        setLoading
     } = useContext(appContext);
     let navigate = useNavigate();
 
@@ -27,7 +31,15 @@ function Status() {
         getStatus();
     }, []);
 
-    return (
+    return loading ? (<div style={{
+        width: "100vw",
+        height: "100vh",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }}>
+        <img src={loader} alt="Loading..." />
+    </div>) : (
         <ThemeProvider theme={theme}>
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
@@ -62,16 +74,33 @@ function Status() {
                     </Toolbar>
                 </AppBar>
             </Box>
-            <Box>
-                <Box sx={{ display: 'flex', justifyContent: "space-between", mt: 2, mx: 2 }}>
-                    <div>
-                        <AllStatus setSelectedImage={setSelectedImage} />
+            {(allStatus.length === 0 || allStatus[0].userStatus.length === 0) ? (<Box sx={{
+                ml: '5vw',
+                mt: '10px'
+            }}>
+                <div style={{ backgroundColor: '#BCCEFB', width: '90vw', height: '100vh' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <div style={{ marginTop: '100px' }}>
+                            <div style={{ fontSize: '20px', marginBottom: '10px' }}>
+                                <span style={{ fontWeight: 'bolder' }}>Search</span> a <span style={{ fontWeight: 'bolder', color: 'white' }}>userName</span> to begin Chat!
+                            </div>
+                            <div style={{ textAlign: 'center' }}>
+                                <img src={nostatus} alt="ChatIcon" height="150px" />
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <StatusWindow image={selectedImage} />
-                    </div>
-                </Box>
-            </Box>
+                </div>
+            </Box>) :
+                <Box>
+                    <Box sx={{ display: 'flex', justifyContent: "space-between", mt: 2, mx: 2 }}>
+                        <div>
+                            <AllStatus setSelectedImage={setSelectedImage} />
+                        </div>
+                        <div>
+                            <StatusWindow image={selectedImage} />
+                        </div>
+                    </Box>
+                </Box>}
         </ThemeProvider>
     );
 }

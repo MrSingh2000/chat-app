@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
+import loader from "../assets/loader.gif";
 
 export default function AllStatus(props) {
   const {
@@ -20,13 +21,16 @@ export default function AllStatus(props) {
     authToken,
     getProfileDetails,
     getStatus,
-    allStatus
+    allStatus,
+    loading,
+    setLoading
   } = React.useContext(appContext);
 
   const { setSelectedImage } = props;
 
   // delete a status of the user
   const deleteStatus = (user, index) => {
+    setLoading(true);
     axios({
       url: `${process.env.REACT_APP_HOST}/api/status/delete/?user=${user}&index=${index}`,
       method: 'delete',
@@ -36,13 +40,22 @@ export default function AllStatus(props) {
     })
       .then((res) => {
         console.log(res);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
       })
   }
 
-  return (
+  return loading ? (<div style={{
+    width: "100vw",
+    height: "100vh",
+    justifyContent: 'center',
+    alignItems: 'center'
+  }}>
+    <img src={loader} alt="Loading..." />
+  </div>) : (
     <ThemeProvider theme={theme}>
       <ImageList sx={{
         width: '500',

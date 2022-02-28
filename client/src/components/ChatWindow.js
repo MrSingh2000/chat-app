@@ -60,7 +60,7 @@ export default function ChatWindow() {
                             borderRadius: '5px',
                             textAlign: 'center',
                             fontWeight: 'bold',
-                            display: `${clientId ? "block" : "none"}`
+                            display: `${clientId ? "block" : "none"}`,
                         }}>
                             {clientId}
                         </div>
@@ -130,7 +130,7 @@ export default function ChatWindow() {
                 }, height: '85vh', backgroundColor: '#3B8AD9'
             }}>
                 <Paper elevation={0}>
-                    <Box sx={{ flexGrow: 1, maxHeight: '2rem', backgroundColor: 'pink' }}>
+                    <Box sx={{ flexGrow: 1, maxHeight: '2rem', backgroundColor: 'pink', mb: '12px' }}>
                         <div style={{
                             backgroundColor: '#032A7F',
                             color: "white",

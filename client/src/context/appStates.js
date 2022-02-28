@@ -40,6 +40,7 @@ const AppStates = (props) => {
     // state for error management in app on client side
     const [error, setError] = useState();
     const [errorType, setErrorType] = useState("error");
+    const [loading, setLoading] = useState(false);
 
     // add the searched & clicked person in the contact list of the user
     const addContact = (client) => {
@@ -63,6 +64,7 @@ const AppStates = (props) => {
 
     // delete a particular contact from the list
     const deleteContact = (client) => {
+        setLoading(true);
         axios({
             method: 'post',
             url: `${process.env.REACT_APP_HOST}/api/search/delete_contact`,
@@ -76,9 +78,11 @@ const AppStates = (props) => {
             .then((res) => {
                 setContacts([...res.data]);
                 setClientId();
+                setLoading(false);
             })
             .catch((err) => {
                 console.log("Error in Contact Delete: ", err);
+                setLoading(false);
             })
     }
 
@@ -123,9 +127,6 @@ const AppStates = (props) => {
                 status: value
             }
         }
-        else {
-            return;
-        }
         if (param !== "profile_pic") {
             axios({
                 url,
@@ -146,6 +147,7 @@ const AppStates = (props) => {
 
     // function to send picture uploaded to the server (AWS) through backend
     const handleProfilePic = (file) => {
+        setLoading(true);
         let data = new FormData();
         data.append("profilePic", file);
         axios({
@@ -159,6 +161,7 @@ const AppStates = (props) => {
         })
             .then((res) => {
                 updateProfileDetails("profile_pic", res.data.details.pic);
+                setLoading(false);
             })
     }
 
@@ -297,6 +300,7 @@ const AppStates = (props) => {
 
     // add a status of the user
     const addStatus = (file) => {
+        setLoading(true);
         let data = new FormData();
         data.append("status", file);
         axios({
@@ -308,9 +312,11 @@ const AppStates = (props) => {
             data
         })
             .then((res) => {
+                setLoading(false);
                 getStatus();
             })
             .catch((err) => {
+                setLoading(false);
                 console.log(err);
             })
     }
@@ -343,7 +349,10 @@ const AppStates = (props) => {
                 allStatus,
                 getStatus,
                 error,
+                updateProfileDetails,
                 setError,
+                loading,
+                setLoading,
             }}>
             {props.children}
         </appContext.Provider>

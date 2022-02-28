@@ -21,6 +21,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import Input from '@mui/material/Input';
 import LocalSeeOutlinedIcon from '@mui/icons-material/LocalSeeOutlined';
+import spinner from "../../assets/spinner1.gif";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -40,8 +41,7 @@ export function AlertDialogSlide(props) {
     const { setUpdatedBio, updatedBio } = props;
 
     const {
-        profileDetails,
-        updateProfileDetails
+        updateProfileDetails,
     } = React.useContext(appContext);
 
     const handleEdit = () => {
@@ -112,7 +112,8 @@ export default function Profile() {
         userId,
         profileDetails,
         theme,
-        handleProfilePic
+        handleProfilePic,
+        loading
     } = React.useContext(appContext);
     let navigate = useNavigate();
 
@@ -159,7 +160,11 @@ export default function Profile() {
                             variant="dot"
                         >
                             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src={profileDetails.pic ? profileDetails.pic : "/static/images/avatar/1.jpg"} />
+                                {!loading ? (<Avatar sx={{ height: '5rem', width: '5rem' }} alt="Remy Sharp" src={profileDetails.pic ? profileDetails.pic : "/static/images/avatar/1.jpg"} />) : null}
+
+                                {loading ? (<img src={spinner} height="80px" width="80px" style={{
+                                    backgroundColor: "#85BEF7",
+                                }} alt="Loading.." />) : null}
                                 <label id="profilePic" style={{ position: 'absolute' }}>
                                     <LocalSeeOutlinedIcon sx={{ height: '4rem', width: '4rem' }} />
                                     <input onChange={(e) => handleProfilePic(e.target.files[0])} style={{ display: 'none' }} type="file" accept="image/png, image/gif, image/jpeg" />
