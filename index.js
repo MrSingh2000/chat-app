@@ -85,14 +85,16 @@ io.on("connection", (socket) => {
     });
 
     // maybe this line is not ever used in code
-    socket.join("privateRoom");
+    // socket.join("privateRoom");
 
     // send a private message to someone with his/her userId which is in payload i.e. payload.to
     socket.on("privateMes", (payload) => {
         // saving chat message to the DB
         saveMessageToDb(payload);
-        io.to(payload.to).emit("privateMes", { data: payload.message, user: payload.from });
-        io.emit("privateMes", { data: payload.message, user: payload.from });
+        socket.to(payload.to).emit("privateMes", {
+            data: payload.message, user: payload.from
+        });
+        // io.emit("privateMes", { data: payload.message, user: payload.from });
     });
 
     socket.on("disconnect", (socket) => {
