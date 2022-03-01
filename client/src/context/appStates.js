@@ -97,9 +97,11 @@ const AppStates = (props) => {
         })
             .then((res) => {
                 setProfileDetails(res.data.details);
+                setLoading(false);
             })
             .catch((err) => {
                 console.log("Error in get Profile Details: ", err);
+                setLoading(false);
             })
     }
 
@@ -185,6 +187,7 @@ const AppStates = (props) => {
     }
     // this useEffect is used only once when user loggedIn or authToken is got
     useEffect(() => {
+        setLoading(true);
         getContactsOnce();
         getProfileDetails();
     }, [authToken]);
@@ -203,6 +206,7 @@ const AppStates = (props) => {
 
     // get user chat
     const getUserChat = (from, to) => {
+        setLoading(true)
         // handling reciveing of user chat on client side
         socket.on("sendChat", (payload) => {
             if (payload.response === null) {
@@ -210,6 +214,7 @@ const AppStates = (props) => {
                 return;
             }
             setChat(payload.response.message);
+            setLoading(false);
         })
     }
 

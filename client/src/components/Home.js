@@ -4,10 +4,19 @@ import AllChats from './AllChats';
 import ChatWindow from './ChatWindow';
 import Box from "@mui/material/Box";
 import TopNav from './TopNav';
+import loader from "../assets/loader.gif";
 
 function Home() {
-    let { userId } = useContext(appContext);
-    return (
+    let { userId, loading } = useContext(appContext);
+    return loading ? (<div style={{
+        width: "100vw",
+        height: "100vh",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }}>
+        <img src={loader} alt="Loading..." />
+    </div>) : (
         <Box>
             <TopNav />
             <Box sx={{ display: 'flex', justifyContent: "space-between", mt: 2, mx: 2 }}>

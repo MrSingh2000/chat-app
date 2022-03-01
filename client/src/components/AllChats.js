@@ -22,10 +22,7 @@ export default function AllChats() {
     deleteContact,
     theme,
     clientId,
-    authToken,
-    urls,
     loading,
-    setLoading
   } = React.useContext(appContext);
 
 

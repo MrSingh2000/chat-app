@@ -11,6 +11,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import chatIcon from "../assets/chat.png";
+import loader from "../assets/loader.gif";
 
 export default function ChatWindow() {
     let {
@@ -19,7 +20,8 @@ export default function ChatWindow() {
         chat,
         userId,
         clientId,
-        setClientId
+        setClientId,
+        loading
     } = useContext(appContext);
     const [message, setMessage] = useState("");
 
@@ -35,7 +37,15 @@ export default function ChatWindow() {
         setMessage("");
     }
 
-    return <div>
+    return loading ? (<div style={{
+        width: "100vw",
+        height: "100vh",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    }}>
+        <img src={loader} alt="Loading..." />
+    </div>) : (<div>
         <ThemeProvider theme={theme}>
             {/* DESKTOP VERSION OF CHAT WINDOW */}
             <Box sx={{
@@ -201,5 +211,5 @@ export default function ChatWindow() {
                 </Paper>
             </Box>
         </ThemeProvider>
-    </div>;
+    </div>)
 }
