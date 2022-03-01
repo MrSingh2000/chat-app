@@ -80,7 +80,7 @@ export default function ChatWindow() {
                                         mx: '5px',
                                         my: '3px'
                                     }}>
-                                        {payload.data}
+                                        {payload.data ? payload.data : payload.message}
                                     </Paper>
                                 </div>
                             )
@@ -178,7 +178,7 @@ export default function ChatWindow() {
                                         mx: '5px',
                                         my: '3px'
                                     }}>
-                                        {payload.data}
+                                        {payload.data ? payload.data : payload.message}
                                     </Paper>
                                 </div>
                             )

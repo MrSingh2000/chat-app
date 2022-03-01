@@ -35,7 +35,7 @@ app.use('/api/status', require('./routes/status'));
 
 app.get('/', (req, res) => {
     res.sendFile(`${__dirname}/pages/backendHomepage.html`);
-  });
+});
 
 // WE CAN ALSO GENERATE OUR OWN SOCKET IO IDS
 // io.engine.generateId = (req) => {
@@ -81,7 +81,7 @@ io.on("connection", (socket) => {
         // sending data to the client in response to the action emmited
         setLastChat(payload.from, payload.to, payload.message);
         console.log(payload);
-        io.emit("sendMes", { ...payload });
+        io.emit("sendMes", { data: payload.message, user: payload.from });
     });
 
     // maybe this line is not ever used in code
@@ -91,9 +91,8 @@ io.on("connection", (socket) => {
     socket.on("privateMes", (payload) => {
         // saving chat message to the DB
         saveMessageToDb(payload);
-        console.log(payload);
-        io.to(payload.to).emit("privateMes", { ...payload });
-        io.emit("privateMes", { ...payload });
+        io.to(payload.to).emit("privateMes", { data: payload.message, user: payload.from });
+        io.emit("privateMes", { data: payload.message, user: payload.from });
     });
 
     socket.on("disconnect", (socket) => {
