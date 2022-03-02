@@ -152,19 +152,19 @@ I tried to add various features to the Chat application, some of them are listed
 
 Anshuman Singh - [@LinkedIn](https://www.linkedin.com/in/anshuman-singh-856991201/) - patialashahi2000@gmail.com
 
-Project Link: [https://github.com/MrSingh2000/Shopsy](https://github.com/MrSingh2000/Shopsy)
+Project Link: [https://github.com/MrSingh2000/chat-app](https://github.com/MrSingh2000/chat-app)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[forks-shield]: https://img.shields.io/github/forks/MrSingh2000/Shopsy.svg?style=for-the-badge
-[forks-url]: https://github.com/MrSingh2000/Shopsy/network/members
-[stars-shield]: https://img.shields.io/github/stars/MrSingh2000/Shopsy.svg?style=for-the-badge
-[stars-url]: https://github.com/MrSingh2000/Shopsy/stargazers
-[issues-shield]: https://img.shields.io/github/issues/MrSingh2000/Shopsy.svg?style=for-the-badge
-[issues-url]: https://github.com/MrSingh2000/Shopsy/issues
+[forks-shield]: https://img.shields.io/github/forks/MrSingh2000/chat-app.svg?style=for-the-badge
+[forks-url]: https://github.com/MrSingh2000/chat-app/network/members
+[stars-shield]: https://img.shields.io/github/stars/MrSingh2000/chat-app.svg?style=for-the-badge
+[stars-url]: https://github.com/MrSingh2000/chat-app/stargazers
+[issues-shield]: https://img.shields.io/github/issues/MrSingh2000/chat-app.svg?style=for-the-badge
+[issues-url]: https://github.com/MrSingh2000/chat-app/issues
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/anshuman-singh-856991201
 [product-screenshot]: readme_assets/screenshot.png
