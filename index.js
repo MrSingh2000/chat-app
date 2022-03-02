@@ -99,9 +99,7 @@ io.on("connection", (socket) => {
         let clientSocket;
         // console.log("liveUsers: ", liveUsers);
         for (let i = 0; i < liveUsers.length; i++) {
-            console.log(liveUsers[i].id);
             if (liveUsers[i].id === payload.to) {
-                console.log("Found One");
                 clientSocket = i;
                 // clientSocket.socket.emit("privateMes", { data: payload.message, user: payload.from });
                 // io.to(liveUsers[i].id).emit("privateMes", { data: payload.message, user: payload.from });
