@@ -16,14 +16,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors());
 
-app.use(express.json())
+app.use(express.json());
 const io = require("socket.io")(server, {
     // allowing cross-origin
     cors: {
         origin: "*",
         credentials: true,
-    }
+    },
 });
+
+    // io.set("transports", ["xhr-polling"]); 
+    // io.set("polling duration", 10); 
 
 connectToMongo();
 
