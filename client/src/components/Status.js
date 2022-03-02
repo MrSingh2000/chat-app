@@ -82,7 +82,7 @@ function Status() {
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <div style={{ marginTop: '100px' }}>
                             <div style={{ fontSize: '20px', marginBottom: '10px' }}>
-                                <span style={{ fontWeight: 'bolder' }}>Search</span> a <span style={{ fontWeight: 'bolder', color: 'white' }}>userName</span> to begin Chat!
+                                <span style={{ fontWeight: 'bolder' }}>Nothing</span> to See here! <span style={{ fontWeight: 'bolder', color: 'white' }}>Add</span> your Status Now!
                             </div>
                             <div style={{ textAlign: 'center' }}>
                                 <img src={nostatus} alt="ChatIcon" height="150px" />
