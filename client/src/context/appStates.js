@@ -4,11 +4,12 @@ import appContext from "./appContext";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 
-const socket = io.connect("https://my-chat-app-backend.herokuapp.com/", {
+const socket = io(`${process.env.REACT_APP_HOST}`, {
     auth: {
         token: localStorage.getItem("authToken"),
         userId: localStorage.getItem("userId")
-    }
+    },
+    autoConnect: false
 });
 
 const AppStates = (props) => {
@@ -88,6 +89,7 @@ const AppStates = (props) => {
 
     // get the profile details of the user
     const getProfileDetails = () => {
+        setLoading(true);
         axios({
             url: `${process.env.REACT_APP_HOST}/api/user/details`,
             method: 'get',
@@ -170,6 +172,7 @@ const AppStates = (props) => {
     // get the contacts of the user once user logged In
     const getContactsOnce = () => {
         if (authToken) {
+            setLoading(true);
             axios({
                 method: "get",
                 url: `${process.env.REACT_APP_HOST}/api/search/my_contacts`,
@@ -178,16 +181,17 @@ const AppStates = (props) => {
                 }
             })
                 .then((res) => {
+                    setLoading(false);
                     setContacts([...res.data.contact.contacts]);
                 })
                 .catch((err) => {
+                    setLoading(false);
                     console.log("Error in getting contacts list: ", err);
                 })
         }
     }
     // this useEffect is used only once when user loggedIn or authToken is got
     useEffect(() => {
-        setLoading(true);
         getContactsOnce();
         getProfileDetails();
     }, [authToken]);
@@ -211,6 +215,7 @@ const AppStates = (props) => {
         socket.on("sendChat", (payload) => {
             if (payload.response === null) {
                 setChat([]);
+                setLoading(false);
                 return;
             }
             setChat(payload.response.message);
@@ -220,6 +225,7 @@ const AppStates = (props) => {
 
     // change the client ID (used in case of searched click)
     const handleChangeClientId = (client) => {
+        socket.connect();
         if (client === userId) {
             return;
         }
@@ -268,7 +274,7 @@ const AppStates = (props) => {
     useEffect(() => {
         // handling sending private message (client Side)
         socket.on("privateMes", (payload) => {
-            if (payload.to === userId) {
+            if (payload.from === userId || payload.to === userId) {
                 setChat([...chat, payload]);
             }
         });
@@ -276,10 +282,6 @@ const AppStates = (props) => {
 
     // sending a message (emitting sendMes action)
     const sendMessage = (val) => {
-        setChat([...chat, {
-            data: val,
-            user: userId,
-        }])
         // updateLastMessage(clientId, val);
         socket.emit("privateMes", { message: val, from: userId, to: clientId });
     }

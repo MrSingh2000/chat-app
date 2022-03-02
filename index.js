@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 // must be unique across all Socket.IO servers
 // }
 
-let liveUsers = new Set();
+let liveUsers = [];
 
 io.use((socket, next) => {
     const token = socket.handshake.auth.token;
@@ -59,7 +59,7 @@ io.use((socket, next) => {
 // connection is established when client server starts
 io.on("connection", (socket) => {
     socket.id = socket.handshake.auth.userId;
-    liveUsers.add(socket);
+    liveUsers.push(socket);
 
     // getting the unique id of that particular socket
     // let id = socket.id;
@@ -72,7 +72,9 @@ io.on("connection", (socket) => {
         let response = await getChat(payload.user, payload.client);
         let response2 = await getChat(payload.client, payload.user);
         // sending/emmiting response to the client side
-        io.emit("sendChat", { response, response2 });
+        // console.log("Response: ", response, " Response2: ", response2);
+        socket.emit("sendChat", { response, response2 })
+        // io.emit("sendChat", { response, response2 });
     });
 
     // declaring what to do when an action named "sendMes" is emmited
@@ -80,7 +82,7 @@ io.on("connection", (socket) => {
         // console.log("This is Payload: ", payload);
         // sending data to the client in response to the action emmited
         setLastChat(payload.from, payload.to, payload.message);
-        console.log(payload);
+        // console.log(payload);
         io.emit("sendMes", { data: payload.message, user: payload.from });
     });
 
@@ -90,16 +92,33 @@ io.on("connection", (socket) => {
     // send a private message to someone with his/her userId which is in payload i.e. payload.to
     socket.on("privateMes", (payload) => {
         // saving chat message to the DB
+        // console.log("Socket: ", socket);
+        // console.log("Payload: ", payload);
         saveMessageToDb(payload);
-        socket.to(payload.to).emit("privateMes", {
-            data: payload.message, user: payload.from
-        });
+        // console.log("Random: ", socket.to(payload.to));
+        let clientSocket;
+        // console.log("liveUsers: ", liveUsers);
+        for (let i = 0; i < liveUsers.length; i++) {
+            console.log(liveUsers[i].id);
+            if (liveUsers[i].id === payload.to) {
+                console.log("Found One");
+                clientSocket = i;
+                // clientSocket.socket.emit("privateMes", { data: payload.message, user: payload.from });
+                // io.to(liveUsers[i].id).emit("privateMes", { data: payload.message, user: payload.from });
+                // liveUsers[i].emit("privateMes", { data: payload.message, user: payload.from });
+                io.emit("privateMes", { data: payload.message, user: payload.from, to: payload.to, from: payload.from });
+                break;
+            }
+        }
+        // socket.emit("privateMes", {
+        //     data: payload.message, user: payload.from
+        // });
         // io.emit("privateMes", { data: payload.message, user: payload.from });
     });
 
     socket.on("disconnect", (socket) => {
         // liveUsers.splice(liveUsers.indexOf(socket), 1);
-        liveUsers.delete(socket);
+        liveUsers.filter((item) => { item !== socket });
     });
 })
 
